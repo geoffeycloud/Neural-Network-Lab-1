@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Lab &amp; Training Studio - Interactive Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Neural Network Lab &amp; Training Studio</h1>
+            <p class="subtitle">Interactive Learning Platform for Neural Networks, Perceptrons, Optimization, and Regularization</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn" data-tab="experiments">⚡ Experiment Templates</button>
+            <button class="tab-btn active" data-tab="intro">What is a Perceptron?</button>
+            <button class="tab-btn" data-tab="simulator">Interactive Simulator</button>
+            <button class="tab-btn" data-tab="logic-gates">Logic Gates</button>
+            <button class="tab-btn" data-tab="multilayer">Single vs Multi-layer</button>
+            <button class="tab-btn" data-tab="activation">Activation Functions</button>
+            <button class="tab-btn" data-tab="xor">XOR Problem</button>
+            <button class="tab-btn" data-tab="loss-functions">Loss Functions</button>
+            <button class="tab-btn" data-tab="gradient-descent">Gradient Descent</button>
+            <button class="tab-btn" data-tab="backpropagation">Backpropagation</button>
+            <button class="tab-btn" data-tab="gradient-problems">Gradient Problems</button>
+            <button class="tab-btn" data-tab="optimizers">Optimizers</button>
+            <button class="tab-btn" data-tab="overfitting">Overfitting &amp; Regularization</button>
+        </nav>
+
+        <!-- Tab 0: Experiment Templates -->
+        <section id="experiments" class="tab-content">
+            <h2>⚡ Experiment Templates - Try Extreme Values!</h2>
+            <p class="subtitle">Quick presets to demonstrate extreme behaviors and pathological cases in neural networks</p>
+
+            <div class="info-box">
+                <p><strong>How to use:</strong> Click any template below to instantly apply preset values and see extreme behaviors in action. Each template navigates to the relevant section and demonstrates a specific phenomenon.</p>
+            </div>
+
+            <div class="template-categories">
+                <h3>💥 Gradient Problems</h3>
+                <div class="template-grid">
+                    <button class="template-card" data-template="gradient-explosion">
+                        <div class="template-icon">💥</div>
+                        <strong>Gradient Explosion</strong>
+                        <p>Learning rate 5.0 causes optimization to diverge</p>
+                        <span class="template-badge danger">EXTREME</span>
+                    </button>
+                    <button class="template-card" data-template="gradient-vanishing">
+                        <div class="template-icon">📉</div>
+                        <strong>Gradient Vanishing</strong>
+                        <p>30-layer sigmoid network - gradients disappear</p>
+                        <span class="template-badge danger">EXTREME</span>
+                    </button>
+                    <button class="template-card" data-template="glacial-learning">
+                        <div class="template-icon">🐌</div>
+                        <strong>Glacial Learning</strong>
+                        <p>Learning rate 0.00001 - painfully slow convergence</p>
+                        <span class="template-badge warning">SLOW</span>
+                    </button>
+                </div>
+
+                <h3>🔒 Regularization Issues</h3>
+                <div class="template-grid">
+                    <button class="template-card" data-template="over-regularized">
+                        <div class="template-icon">🔒</div>
+                        <strong>Over-Regularized</strong>
+                        <p>Lambda 10.0 + 90% dropout = underfitting</p>
+                        <span class="template-badge danger">EXTREME</span>
+                    </button>
+                    <button class="template-card" data-template="extreme-dropout">
+                        <div class="template-icon">🎲</div>
+                        <strong>Extreme Dropout</strong>
+                        <p>95% dropout - only 5% neurons active</p>
+                        <span class="template-badge danger">EXTREME</span>
+                    </button>
+                    <button class="template-card" data-template="overfitting-demo">
+                        <div class="template-icon">📈</div>
+                        <strong>Overfitting Demo</strong>
+                        <p>No regularization on complex model</p>
+                        <span class="template-badge warning">RISKY</span>
+                    </button>
+                </div>
+
+                <h3>⚡ Activation Issues</h3>
+                <div class="template-grid">
+                    <button class="template-card" data-template="sigmoid-saturation">
+                        <div class="template-icon">📊</div>
+                        <strong>Sigmoid Saturation</strong>
+                        <p>Weights 10.0 - sigmoid stuck at 1.0</p>
+                        <span class="template-badge danger">SATURATED</span>
+                    </button>
+                    <button class="template-card" data-template="relu-dead">
+                        <div class="template-icon">💀</div>
+                        <strong>Dead ReLU Neurons</strong>
+                        <p>Negative weights - all neurons output 0</p>
+                        <span class="template-badge danger">DEAD</span>
+                    </button>
+                </div>
+
+                <h3>🔄 Optimization Problems</h3>
+                <div class="template-grid">
+                    <button class="template-card" data-template="unstable-momentum">
+                        <div class="template-icon">🌀</div>
+                        <strong>Unstable Momentum</strong>
+                        <p>Momentum 1.2 causes wild oscillations</p>
+                        <span class="template-badge danger">UNSTABLE</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="template-status" id="template-status" style="display: none;">
+                <h3>✅ Template Applied</h3>
+                <p id="template-message"></p>
+                <button class="btn btn--secondary" id="reset-template">Reset to Defaults</button>
+            </div>
+        </section>
+
+        <!-- Tab 1: Introduction -->
+        <section id="intro" class="tab-content active">
+            <h2>What is a Perceptron?</h2>
+            <div class="info-box">
+                <p><strong>Definition:</strong> A perceptron receives multiple input signals and outputs one signal.</p>
+            </div>
+
+            <div class="perceptron-diagram">
+                <svg width="600" height="300" viewBox="0 0 600 300">
+                    <!-- Input x1 -->
+                    <circle cx="50" cy="80" r="15" fill="var(--color-primary)" opacity="0.8"/>
+                    <text x="50" y="85" text-anchor="middle" fill="white" font-size="14" font-weight="bold">x₁</text>
+                    
+                    <!-- Input x2 -->
+                    <circle cx="50" cy="220" r="15" fill="var(--color-primary)" opacity="0.8"/>
+                    <text x="50" y="225" text-anchor="middle" fill="white" font-size="14" font-weight="bold">x₂</text>
+                    
+                    <!-- Weights -->
+                    <line x1="65" y1="80" x2="230" y2="130" stroke="var(--color-teal-500)" stroke-width="3"/>
+                    <text x="130" y="90" fill="var(--color-teal-600)" font-size="16" font-weight="bold">w₁</text>
+                    
+                    <line x1="65" y1="220" x2="230" y2="170" stroke="var(--color-teal-500)" stroke-width="3"/>
+                    <text x="130" y="210" fill="var(--color-teal-600)" font-size="16" font-weight="bold">w₂</text>
+                    
+                    <!-- Neuron -->
+                    <circle cx="280" cy="150" r="50" fill="var(--color-bg-1)" stroke="var(--color-primary)" stroke-width="3"/>
+                    <text x="280" y="145" text-anchor="middle" fill="var(--color-text)" font-size="14">Σ</text>
+                    <text x="280" y="165" text-anchor="middle" fill="var(--color-text)" font-size="12">Neuron</text>
+                    
+                    <!-- Bias -->
+                    <line x1="280" y1="90" x2="280" y2="100" stroke="var(--color-orange-500)" stroke-width="2" stroke-dasharray="5,5"/>
+                    <text x="280" y="80" text-anchor="middle" fill="var(--color-orange-500)" font-size="14" font-weight="bold">bias (θ)</text>
+                    
+                    <!-- Activation Function -->
+                    <rect x="360" y="120" width="80" height="60" fill="var(--color-bg-2)" stroke="var(--color-warning)" stroke-width="2" rx="5"/>
+                    <text x="400" y="145" text-anchor="middle" fill="var(--color-text)" font-size="12">Activation</text>
+                    <text x="400" y="160" text-anchor="middle" fill="var(--color-text)" font-size="12">Function</text>
+                    
+                    <!-- Output -->
+                    <line x1="440" y1="150" x2="520" y2="150" stroke="var(--color-success)" stroke-width="3"/>
+                    <circle cx="550" cy="150" r="15" fill="var(--color-success)" opacity="0.8"/>
+                    <text x="550" y="155" text-anchor="middle" fill="white" font-size="14" font-weight="bold">y</text>
+                    <text x="550" y="180" text-anchor="middle" fill="var(--color-text)" font-size="12">Output</text>
+                </svg>
+            </div>
+
+            <div class="formula-box">
+                <h3>Mathematical Representation:</h3>
+                <p class="formula">z = w₁ × x₁ + w₂ × x₂ + bias</p>
+                <p class="formula">y = f(z)  <span style="color: var(--color-text-secondary);">(where f is the activation function)</span></p>
+            </div>
+
+            <div class="history-section">
+                <h3>📜 Historical Context</h3>
+                <div class="history-card">
+                    <p><strong>Inventor:</strong> Frank Rosenblatt</p>
+                    <p><strong>Year:</strong> 1957-1958</p>
+                    <p><strong>Location:</strong> Cornell Aeronautical Laboratory</p>
+                    <p><strong>Significance:</strong> First practical application of artificial neural networks, marking a new stage in neural network development.</p>
+                    <p class="info-text">Rosenblatt built the hardware perceptron "Mark I" using 400 optoelectronic devices as neurons and adjustable potentiometers as synaptic weights. This groundbreaking image recognition system received significant funding from the U.S. Navy.</p>
+                </div>
+            </div>
+
+            <div class="analogy-section">
+                <h3>💡 Understanding Weights</h3>
+                <p><strong>Analogy:</strong> A weight is similar to resistance in an electrical circuit.</p>
+                <ul>
+                    <li><strong>Low resistance → More current flows</strong></li>
+                    <li><strong>High weight → More signal passes through</strong></li>
+                    <li>Weights determine the importance of each input signal</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Tab 2: Interactive Simulator -->
+        <section id="simulator" class="tab-content">
+            <h2>Interactive Perceptron Simulator</h2>
+            <p class="subtitle">Adjust inputs, weights, and bias to see how the perceptron responds in real-time</p>
+
+            <div class="simulator-container">
+                <div class="controls-panel">
+                    <h3>Input Signals</h3>
+                    <div class="control-group">
+                        <label>x₁: <span id="x1-value" class="value-display">0.5</span></label>
+                        <input type="range" id="x1-input" min="-5" max="5" step="0.1" value="0.5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: -5 to 5 (extreme values)</small>
+                    </div>
+                    <div class="control-group">
+                        <label>x₂: <span id="x2-value" class="value-display">0.5</span></label>
+                        <input type="range" id="x2-input" min="-5" max="5" step="0.1" value="0.5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: -5 to 5 (extreme values)</small>
+                    </div>
+
+                    <h3>Weights</h3>
+                    <div class="control-group">
+                        <label>w₁: <span id="w1-value" class="value-display">0.5</span> <span id="w1-warning" class="range-warning"></span></label>
+                        <input type="range" id="w1-input" min="-10" max="10" step="0.1" value="0.5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: -10 to 10 (see extreme saturation)</small>
+                    </div>
+                    <div class="control-group">
+                        <label>w₂: <span id="w2-value" class="value-display">0.5</span> <span id="w2-warning" class="range-warning"></span></label>
+                        <input type="range" id="w2-input" min="-10" max="10" step="0.1" value="0.5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: -10 to 10 (see extreme saturation)</small>
+                    </div>
+
+                    <h3>Bias/Threshold</h3>
+                    <div class="control-group">
+                        <label>bias: <span id="bias-value" class="value-display">-0.8</span> <span id="bias-warning" class="range-warning"></span></label>
+                        <input type="range" id="bias-input" min="-10" max="10" step="0.1" value="-0.8">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: -10 to 10 (extreme threshold shifting)</small>
+                    </div>
+
+                    <h3>Activation Function</h3>
+                    <div class="control-group">
+                        <select id="activation-select">
+                            <option value="step">Step Function (0/1)</option>
+                            <option value="sign">Sign Function (-1/1)</option>
+                            <option value="sigmoid">Sigmoid Function (0-1 continuous)</option>
+                            <option value="tanh">Tanh Function (-1 to 1)</option>
+                            <option value="relu">ReLU Function (0 to ∞)</option>
+                            <option value="leaky_relu">Leaky ReLU Function (-∞ to ∞)</option>
+                            <option value="swish">Swish Function (self-gated)</option>
+                            <option value="softmax">Softmax Function (exponential)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="output-panel">
+                    <h3>Calculation &amp; Output</h3>
+                    <div class="calculation-display">
+                        <p><strong>Weighted Sum:</strong></p>
+                        <p class="formula" id="calc-formula">z = 0.5 × 0 + 0.5 × 0 + (-0.8) = -0.8</p>
+                        
+                        <p><strong>Activation Function:</strong></p>
+                        <p class="formula" id="activation-formula">f(z) = step(-0.8) = 0</p>
+                        
+                        <div class="output-result" id="output-result">
+                            <p><strong>Output:</strong></p>
+                            <div class="neuron-status inactive" id="neuron-status">
+                                <span class="output-value" id="output-value">0</span>
+                                <p class="status-text" id="status-text">Neuron NOT Activated</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="visualization-canvas">
+                        <h4>Decision Boundary Visualization</h4>
+                        <canvas id="decision-canvas" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Logic Gates -->
+        <section id="logic-gates" class="tab-content">
+            <h2>Logic Gates with Perceptrons</h2>
+            <p class="subtitle">Single-layer perceptrons can implement basic logic gates</p>
+
+            <div class="gate-selector">
+                <button class="gate-btn active" data-gate="AND">AND Gate</button>
+                <button class="gate-btn" data-gate="OR">OR Gate</button>
+                <button class="gate-btn" data-gate="NAND">NAND Gate</button>
+                <button class="gate-btn" data-gate="XOR">XOR Gate</button>
+            </div>
+
+            <div class="gate-content">
+                <div class="gate-info">
+                    <h3 id="gate-title">AND Gate</h3>
+                    <p id="gate-description">Output 1 only when both inputs are 1</p>
+                    <div class="gate-weights">
+                        <p><strong>Pre-configured Weights:</strong></p>
+                        <p id="gate-weights-display">w₁ = 0.5, w₂ = 0.5, bias = -0.8</p>
+                    </div>
+                </div>
+
+                <div class="truth-table-container">
+                    <h4>Truth Table</h4>
+                    <table class="truth-table" id="truth-table">
+                        <thead>
+                            <tr>
+                                <th>x₁</th>
+                                <th>x₂</th>
+                                <th>Output</th>
+                            </tr>
+                        </thead>
+                        <tbody id="truth-table-body">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="gate-tester">
+                    <h4>Test the Gate</h4>
+                    <div class="test-inputs">
+                        <div class="test-input-group">
+                            <label>x₁:</label>
+                            <button class="test-btn" data-input="gate-x1" data-value="0">0</button>
+                            <button class="test-btn" data-input="gate-x1" data-value="1">1</button>
+                        </div>
+                        <div class="test-input-group">
+                            <label>x₂:</label>
+                            <button class="test-btn" data-input="gate-x2" data-value="0">0</button>
+                            <button class="test-btn" data-input="gate-x2" data-value="1">1</button>
+                        </div>
+                    </div>
+                    <div class="gate-result" id="gate-result">
+                        <p><strong>Calculation:</strong> <span id="gate-calc">z = 0.5×0 + 0.5×0 + (-0.8) = -0.8</span></p>
+                        <p><strong>Output:</strong> <span class="output-badge" id="gate-output">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4: Single vs Multi-layer -->
+        <section id="multilayer" class="tab-content">
+            <h2>Single-layer vs Multi-layer Perceptrons</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>Single-layer Perceptron</h3>
+                    <div class="layer-diagram">
+                        <svg width="300" height="200" viewBox="0 0 300 200">
+                            <!-- Input Layer -->
+                            <circle cx="50" cy="60" r="20" fill="var(--color-primary)" opacity="0.8"/>
+                            <text x="50" y="65" text-anchor="middle" fill="white" font-size="12">x₁</text>
+                            <circle cx="50" cy="140" r="20" fill="var(--color-primary)" opacity="0.8"/>
+                            <text x="50" y="145" text-anchor="middle" fill="white" font-size="12">x₂</text>
+                            
+                            <!-- Connections -->
+                            <line x1="70" y1="60" x2="210" y2="100" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            <line x1="70" y1="140" x2="210" y2="100" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            
+                            <!-- Output Layer -->
+                            <circle cx="250" cy="100" r="25" fill="var(--color-success)" opacity="0.8"/>
+                            <text x="250" y="105" text-anchor="middle" fill="white" font-size="12">y</text>
+                            
+                            <!-- Labels -->
+                            <text x="50" y="190" text-anchor="middle" fill="var(--color-text)" font-size="11">Input Layer</text>
+                            <text x="250" y="190" text-anchor="middle" fill="var(--color-text)" font-size="11">Output Layer</text>
+                        </svg>
+                    </div>
+                    <div class="capability-list">
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li>✅ Linearly separable problems</li>
+                            <li>✅ AND, OR, NAND gates</li>
+                            <li>❌ XOR and non-linear problems</li>
+                        </ul>
+                        <p class="limit-note"><strong>Limitation:</strong> Can only create linear decision boundaries (straight lines)</p>
+                    </div>
+                </div>
+
+                <div class="comparison-card">
+                    <h3>Multi-layer Perceptron</h3>
+                    <div class="layer-diagram">
+                        <svg width="300" height="200" viewBox="0 0 300 200">
+                            <!-- Input Layer -->
+                            <circle cx="30" cy="60" r="15" fill="var(--color-primary)" opacity="0.8"/>
+                            <text x="30" y="65" text-anchor="middle" fill="white" font-size="10">x₁</text>
+                            <circle cx="30" cy="140" r="15" fill="var(--color-primary)" opacity="0.8"/>
+                            <text x="30" y="145" text-anchor="middle" fill="white" font-size="10">x₂</text>
+                            
+                            <!-- Hidden Layer -->
+                            <circle cx="135" cy="40" r="15" fill="var(--color-warning)" opacity="0.8"/>
+                            <text x="135" y="45" text-anchor="middle" fill="white" font-size="10">h₁</text>
+                            <circle cx="135" cy="100" r="15" fill="var(--color-warning)" opacity="0.8"/>
+                            <text x="135" y="105" text-anchor="middle" fill="white" font-size="10">h₂</text>
+                            <circle cx="135" cy="160" r="15" fill="var(--color-warning)" opacity="0.8"/>
+                            <text x="135" y="165" text-anchor="middle" fill="white" font-size="10">h₃</text>
+                            
+                            <!-- Connections to hidden -->
+                            <line x1="45" y1="60" x2="120" y2="40" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="45" y1="60" x2="120" y2="100" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="45" y1="60" x2="120" y2="160" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="45" y1="140" x2="120" y2="40" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="45" y1="140" x2="120" y2="100" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="45" y1="140" x2="120" y2="160" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            
+                            <!-- Connections to output -->
+                            <line x1="150" y1="40" x2="235" y2="100" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="150" y1="100" x2="235" y2="100" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            <line x1="150" y1="160" x2="235" y2="100" stroke="var(--color-teal-500)" stroke-width="1" opacity="0.6"/>
+                            
+                            <!-- Output Layer -->
+                            <circle cx="270" cy="100" r="20" fill="var(--color-success)" opacity="0.8"/>
+                            <text x="270" y="105" text-anchor="middle" fill="white" font-size="10">y</text>
+                            
+                            <!-- Labels -->
+                            <text x="30" y="185" text-anchor="middle" fill="var(--color-text)" font-size="9">Input</text>
+                            <text x="135" y="185" text-anchor="middle" fill="var(--color-text)" font-size="9">Hidden</text>
+                            <text x="270" y="185" text-anchor="middle" fill="var(--color-text)" font-size="9">Output</text>
+                        </svg>
+                    </div>
+                    <div class="capability-list">
+                        <h4>Capabilities:</h4>
+                        <ul>
+                            <li>✅ Non-linearly separable problems</li>
+                            <li>✅ XOR and complex patterns</li>
+                            <li>✅ Universal approximation</li>
+                        </ul>
+                        <p class="limit-note"><strong>Advantage:</strong> Can create non-linear decision boundaries (curves)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nonlinearity-explanation">
+                <h3>🔑 Sources of Nonlinearity</h3>
+                <div class="explanation-grid">
+                    <div class="explanation-card">
+                        <h4>1. Multiple Layers</h4>
+                        <p>Adding hidden layers allows the network to combine features in complex ways, transforming the input space.</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>2. Nonlinear Activation Functions</h4>
+                        <p>Activation functions like sigmoid or ReLU introduce nonlinearity between layers, enabling complex transformations.</p>
+                    </div>
+                </div>
+                <div class="warning-box">
+                    <p><strong>⚠️ Important:</strong> Without nonlinear activation functions in hidden layers, even a multi-layer network would behave like a single-layer perceptron!</p>
+                    <p class="formula">Multiple linear transformations = One linear transformation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 5: Activation Functions -->
+        <section id="activation" class="tab-content">
+            <h2>Activation Functions</h2>
+            <p class="subtitle">Activation functions determine how a neuron transforms its input</p>
+
+            <div class="activation-grid">
+                <div class="activation-card">
+                    <h3>Sign Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = { 1 if z ≥ 0, -1 if z &lt; 0 }</p>
+                        <p><strong>Range:</strong> [-1, 1]</p>
+                        <p><strong>Use:</strong> Original perceptron</p>
+                    </div>
+                    <canvas id="sign-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Step Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = { 1 if z ≥ 0, 0 if z &lt; 0 }</p>
+                        <p><strong>Range:</strong> [0, 1]</p>
+                        <p><strong>Use:</strong> Heaviside step / hard limit</p>
+                    </div>
+                    <canvas id="step-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Sigmoid Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = 1 / (1 + e<sup>-z</sup>)</p>
+                        <p><strong>Range:</strong> (0, 1)</p>
+                        <p><strong>Use:</strong> Binary classification</p>
+                    </div>
+                    <canvas id="sigmoid-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Tanh Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = (e<sup>z</sup> - e<sup>-z</sup>) / (e<sup>z</sup> + e<sup>-z</sup>)</p>
+                        <p><strong>Range:</strong> (-1, 1)</p>
+                        <p><strong>Use:</strong> Hidden layers (zero-centered)</p>
+                    </div>
+                    <canvas id="tanh-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>ReLU Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = max(0, z)</p>
+                        <p><strong>Range:</strong> [0, ∞)</p>
+                        <p><strong>Use:</strong> Most popular for hidden layers</p>
+                    </div>
+                    <canvas id="relu-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Leaky ReLU Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = z if z &gt; 0, else 0.01×z</p>
+                        <p><strong>Range:</strong> (-∞, ∞)</p>
+                        <p><strong>Use:</strong> Solves dying ReLU problem</p>
+                    </div>
+                    <canvas id="leaky-relu-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Swish Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = z × sigmoid(z)</p>
+                        <p><strong>Range:</strong> (-∞, ∞)</p>
+                        <p><strong>Use:</strong> Modern deep networks</p>
+                    </div>
+                    <canvas id="swish-canvas" width="300" height="200"></canvas>
+                </div>
+
+                <div class="activation-card">
+                    <h3>Softmax Function</h3>
+                    <div class="formula-display">
+                        <p class="formula">f(z) = e<sup>z</sup> (single neuron)</p>
+                        <p><strong>Range:</strong> (0, ∞)</p>
+                        <p><strong>Use:</strong> Multi-class classification</p>
+                    </div>
+                    <canvas id="softmax-canvas" width="300" height="200"></canvas>
+                </div>
+            </div>
+
+
+
+            <div class="interactive-activation">
+                <h3>Interactive Activation Function Explorer</h3>
+                <div class="activation-explorer">
+                    <div class="explorer-controls">
+                        <label>Input value (z): <span id="act-z-value">0</span></label>
+                        <input type="range" id="act-z-input" min="-10" max="10" step="0.1" value="0">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Extended range: -10 to 10</small>
+                    </div>
+                    <div class="explorer-results">
+                        <div class="result-item">
+                            <strong>Sign:</strong> <span id="sign-result" class="result-value">1</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Step:</strong> <span id="step-result" class="result-value">1</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Sigmoid:</strong> <span id="sigmoid-result" class="result-value">0.500</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Tanh:</strong> <span id="tanh-result" class="result-value">0.000</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>ReLU:</strong> <span id="relu-result" class="result-value">0.000</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Leaky ReLU:</strong> <span id="leaky-relu-result" class="result-value">0.000</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Swish:</strong> <span id="swish-result" class="result-value">0.000</span>
+                        </div>
+                        <div class="result-item">
+                            <strong>Softmax:</strong> <span id="softmax-result" class="result-value">1.000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 6: XOR Problem -->
+        <section id="xor" class="tab-content">
+            <h2>The XOR Problem</h2>
+            <p class="subtitle">Understanding why single-layer perceptrons fail and multi-layer perceptrons succeed</p>
+
+            <div class="xor-explanation">
+                <div class="xor-truth-table">
+                    <h3>XOR Truth Table</h3>
+                    <table class="truth-table">
+                        <thead>
+                            <tr>
+                                <th>x₁</th>
+                                <th>x₂</th>
+                                <th>XOR Output</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td><span class="output-badge output-0">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td><span class="output-badge output-1">1</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><span class="output-badge output-1">1</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td><span class="output-badge output-0">0</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="description"><strong>Rule:</strong> Output 1 when inputs differ</p>
+                </div>
+
+                <div class="xor-visualization">
+                    <h3>Visual Representation</h3>
+                    <canvas id="xor-canvas" width="400" height="400"></canvas>
+                    <p class="explanation-text">❌ <strong>No single straight line can separate the red and green points!</strong></p>
+                </div>
+            </div>
+
+            <div class="xor-solution">
+                <h3>🎯 Solution: Multi-layer Perceptron</h3>
+                <p>The XOR gate can be implemented by combining AND, NAND, and OR gates:</p>
+                
+                <div class="xor-decomposition">
+                    <div class="decomp-diagram">
+                        <svg width="600" height="300" viewBox="0 0 600 300">
+                            <!-- Inputs -->
+                            <circle cx="50" cy="80" r="15" fill="var(--color-primary)"/>
+                            <text x="50" y="85" text-anchor="middle" fill="white" font-size="12">x₁</text>
+                            <circle cx="50" cy="220" r="15" fill="var(--color-primary)"/>
+                            <text x="50" y="225" text-anchor="middle" fill="white" font-size="12">x₂</text>
+                            
+                            <!-- Hidden Layer Neurons -->
+                            <!-- NAND -->
+                            <circle cx="200" cy="60" r="25" fill="var(--color-warning)" opacity="0.9"/>
+                            <text x="200" y="65" text-anchor="middle" fill="white" font-size="11" font-weight="bold">NAND</text>
+                            <line x1="65" y1="80" x2="175" y2="65" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            <line x1="65" y1="220" x2="175" y2="70" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            
+                            <!-- OR -->
+                            <circle cx="200" cy="240" r="25" fill="var(--color-warning)" opacity="0.9"/>
+                            <text x="200" y="245" text-anchor="middle" fill="white" font-size="11" font-weight="bold">OR</text>
+                            <line x1="65" y1="80" x2="175" y2="235" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            <line x1="65" y1="220" x2="175" y2="240" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            
+                            <!-- Output Neuron (AND) -->
+                            <circle cx="400" cy="150" r="30" fill="var(--color-success)" opacity="0.9"/>
+                            <text x="400" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">AND</text>
+                            <line x1="225" y1="60" x2="370" y2="140" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            <line x1="225" y1="240" x2="370" y2="160" stroke="var(--color-teal-500)" stroke-width="2"/>
+                            
+                            <!-- Output -->
+                            <line x1="430" y1="150" x2="510" y2="150" stroke="var(--color-success)" stroke-width="3"/>
+                            <circle cx="540" cy="150" r="15" fill="var(--color-success)"/>
+                            <text x="540" y="155" text-anchor="middle" fill="white" font-size="12" font-weight="bold">XOR</text>
+                            
+                            <!-- Layer Labels -->
+                            <text x="50" y="270" text-anchor="middle" fill="var(--color-text)" font-size="12">Input Layer</text>
+                            <text x="200" y="290" text-anchor="middle" fill="var(--color-text)" font-size="12">Hidden Layer</text>
+                            <text x="400" y="270" text-anchor="middle" fill="var(--color-text)" font-size="12">Output Layer</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="xor-truth-combined">
+                    <h4>Combined Truth Table</h4>
+                    <table class="truth-table">
+                        <thead>
+                            <tr>
+                                <th>x₁</th>
+                                <th>x₂</th>
+                                <th>NAND</th>
+                                <th>OR</th>
+                                <th>AND(NAND,OR) = XOR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td><span class="output-badge output-0">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td><span class="output-badge output-1">1</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td><span class="output-badge output-1">1</span></td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td><span class="output-badge output-0">0</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="key-insight">
+                    <h4>🔑 Key Insight</h4>
+                    <p>By combining simple linear classifiers (NAND, OR) in a hidden layer and then combining their outputs with another classifier (AND), we create a non-linear decision boundary that can solve XOR!</p>
+                    <p><strong>This demonstrates the power of depth in neural networks.</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 7: Loss Functions -->
+        <section id="loss-functions" class="tab-content">
+            <h2>Loss Functions</h2>
+            <p class="subtitle">Measuring the difference between predicted and actual values</p>
+
+            <div class="info-box">
+                <p><strong>What is a Loss Function?</strong></p>
+                <p>A loss function measures how well the neural network's predictions match the actual target values. It quantifies the error during training, and the goal of learning is to minimize this loss.</p>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>Mean Squared Error (MSE)</h3>
+                    <div class="formula-display">
+                        <p class="formula">MSE = (1/n) × Σ(y_pred - y_actual)²</p>
+                        <p><strong>Use Case:</strong> Regression tasks</p>
+                    </div>
+                    <div class="capability-list">
+                        <h4>Characteristics:</h4>
+                        <ul>
+                            <li>Penalizes larger errors more heavily (quadratic)</li>
+                            <li>Sensitive to outliers</li>
+                            <li>Easier to compute derivatives</li>
+                            <li>Always non-negative</li>
+                        </ul>
+                    </div>
+                    <canvas id="mse-canvas" width="400" height="300"></canvas>
+                </div>
+
+                <div class="comparison-card">
+                    <h3>Cross-Entropy Loss</h3>
+                    <div class="formula-display">
+                        <p class="formula">CE = -Σ(y × log(ŷ))</p>
+                        <p><strong>Use Case:</strong> Classification tasks</p>
+                    </div>
+                    <div class="capability-list">
+                        <h4>Characteristics:</h4>
+                        <ul>
+                            <li>Works with probability distributions</li>
+                            <li>Better for classification than MSE</li>
+                            <li>Focuses on correct class probability</li>
+                            <li>More numerically stable</li>
+                        </ul>
+                    </div>
+                    <canvas id="ce-canvas" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+            <div class="interactive-activation">
+                <h3>Interactive Loss Calculator</h3>
+                <div class="loss-calculator">
+                    <div class="loss-inputs">
+                        <h4>Enter Predictions &amp; Actual Values</h4>
+                        <div class="loss-input-group">
+                            <label>Sample 1: Predicted: <span id="pred1-val">0.9</span></label>
+                            <input type="range" id="pred1" min="-5" max="5" step="0.1" value="0.9">
+                            <label>Actual: <span id="actual1-val">1.0</span></label>
+                            <input type="range" id="actual1" min="-5" max="5" step="0.1" value="1.0">
+                        </div>
+                        <div class="loss-input-group">
+                            <label>Sample 2: Predicted: <span id="pred2-val">0.2</span></label>
+                            <input type="range" id="pred2" min="-5" max="5" step="0.1" value="0.2">
+                            <label>Actual: <span id="actual2-val">0.0</span></label>
+                            <input type="range" id="actual2" min="-5" max="5" step="0.1" value="0.0">
+                        </div>
+                        <div class="loss-input-group">
+                            <label>Sample 3: Predicted: <span id="pred3-val">0.8</span></label>
+                            <input type="range" id="pred3" min="-5" max="5" step="0.1" value="0.8">
+                            <label>Actual: <span id="actual3-val">1.0</span></label>
+                            <input type="range" id="actual3" min="-5" max="5" step="0.1" value="1.0">
+                        </div>
+                    </div>
+                    <div class="loss-results">
+                        <div class="loss-result-card">
+                            <h4>Mean Squared Error</h4>
+                            <div class="loss-value" id="mse-result">0.027</div>
+                            <p class="loss-formula" id="mse-calc">MSE = ((0.9-1)² + (0.2-0)² + (0.8-1)²) / 3</p>
+                        </div>
+                        <div class="loss-result-card">
+                            <h4>Cross-Entropy Loss</h4>
+                            <div class="loss-value" id="ce-result">0.231</div>
+                            <p class="loss-formula" id="ce-calc">CE = -(1×log(0.9) + 0×log(0.2) + 1×log(0.8))</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <h4>🔑 When to Use Each Loss Function</h4>
+                <p><strong>MSE:</strong> Best for regression problems where you're predicting continuous values (e.g., house prices, temperature)</p>
+                <p><strong>Cross-Entropy:</strong> Best for classification problems where you're predicting categories (e.g., cat vs dog, spam detection)</p>
+            </div>
+        </section>
+
+        <!-- Tab 8: Gradient Descent -->
+        <section id="gradient-descent" class="tab-content">
+            <h2>Gradient Descent Algorithms</h2>
+            <p class="subtitle">Finding optimal parameters by following the gradient</p>
+
+            <div class="info-box">
+                <p><strong>What is Gradient Descent?</strong></p>
+                <p>Gradient descent is an optimization algorithm that finds the minimum of the loss function by iteratively moving in the direction of steepest descent (negative gradient). The gradient tells us which direction increases the function value the most, so we move in the opposite direction.</p>
+            </div>
+
+            <div class="gradient-comparison">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Samples per Update</th>
+                            <th>Speed</th>
+                            <th>Stability</th>
+                            <th>Memory</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Batch GD (BGD)</strong></td>
+                            <td>All training data</td>
+                            <td>⭐ Slow</td>
+                            <td>⭐⭐⭐ Very Stable</td>
+                            <td>❌ High</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stochastic GD (SGD)</strong></td>
+                            <td>1 sample</td>
+                            <td>⭐⭐⭐ Fast</td>
+                            <td>⭐ Noisy</td>
+                            <td>✅ Low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mini-batch GD (MBGD)</strong></td>
+                            <td>Small batch (32-256)</td>
+                            <td>⭐⭐ Moderate</td>
+                            <td>⭐⭐ Stable</td>
+                            <td>✅ Moderate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="gd-visualization-container">
+                <h3>Gradient Descent Visualization</h3>
+                <div class="gd-controls">
+                    <div class="control-group">
+                        <label>Algorithm:</label>
+                        <select id="gd-algorithm">
+                            <option value="bgd">Batch Gradient Descent (BGD)</option>
+                            <option value="sgd">Stochastic Gradient Descent (SGD)</option>
+                            <option value="mbgd" selected>Mini-batch Gradient Descent (MBGD)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Learning Rate (η): <span id="lr-value">0.1</span> <span id="lr-warning" class="range-warning"></span></label>
+                        <input type="range" id="learning-rate" min="0.0001" max="5.0" step="0.01" value="0.1">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 0.0001 to 5.0 | <span style="color: var(--color-error);">Warning: &gt;1.0 may cause divergence!</span></small>
+                    </div>
+                    <button class="btn btn--primary" id="run-gd">Run Optimization</button>
+                    <button class="btn btn--secondary" id="reset-gd">Reset</button>
+                </div>
+                <canvas id="gd-canvas" width="600" height="400"></canvas>
+                <div id="gd-info" class="gd-info">
+                    <p><strong>Iterations:</strong> <span id="gd-iterations">0</span></p>
+                    <p><strong>Current Loss:</strong> <span id="gd-loss">0.000</span></p>
+                </div>
+            </div>
+
+            <div class="explanation-grid">
+                <div class="explanation-card">
+                    <h4>Batch Gradient Descent (BGD)</h4>
+                    <div class="code-block">
+                        <pre>Initialize weights w randomly
+while not converged:
+    Δw = 0
+    for each sample (x, t) in dataset:
+        Δw += -η × ∂C/∂w
+    w = w + Δw</pre>
+                    </div>
+                    <p><strong>Pros:</strong> Guaranteed convergence to minimum (convex), stable</p>
+                    <p><strong>Cons:</strong> Slow for large datasets, can get stuck in local minima</p>
+                </div>
+                <div class="explanation-card">
+                    <h4>Stochastic Gradient Descent (SGD)</h4>
+                    <div class="code-block">
+                        <pre>Initialize weights w randomly
+while not converged:
+    Shuffle training data
+    for each sample (x, t):
+        Δw = -η × ∂C/∂w
+        w = w + Δw</pre>
+                    </div>
+                    <p><strong>Pros:</strong> Fast updates, can escape local minima, online learning</p>
+                    <p><strong>Cons:</strong> Noisy convergence, oscillates around minimum</p>
+                </div>
+                <div class="explanation-card">
+                    <h4>Mini-batch Gradient Descent (MBGD)</h4>
+                    <div class="code-block">
+                        <pre>Initialize weights w randomly
+while not converged:
+    Shuffle training data
+    for each batch (size B):
+        Δw = 0
+        for sample (x, t) in batch:
+            Δw += -η × ∂C/∂w
+        w = w + Δw / B</pre>
+                    </div>
+                    <p><strong>Pros:</strong> Balance of speed and stability, parallelizable, most commonly used</p>
+                    <p><strong>Cons:</strong> Need to tune batch size</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 9: Backpropagation -->
+        <section id="backpropagation" class="tab-content">
+            <h2>Backpropagation Algorithm</h2>
+            <p class="subtitle">How neural networks learn using the chain rule</p>
+
+            <div class="info-box">
+                <p><strong>What is Backpropagation?</strong></p>
+                <p>Backpropagation is the algorithm that calculates how much each weight contributed to the error, allowing us to update weights efficiently. It uses the chain rule from calculus to propagate the error backward through the network.</p>
+            </div>
+
+            <div class="training-process">
+                <h3>Neural Network Training Process</h3>
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h4>Forward Propagation</h4>
+                        <p>Input flows through network, each layer computes z = wx + b, then a = f(z)</p>
+                    </div>
+                    <div class="process-arrow">→</div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h4>Calculate Loss</h4>
+                        <p>Compare output with target: C = Loss(output, target)</p>
+                    </div>
+                    <div class="process-arrow">→</div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h4>Backpropagation</h4>
+                        <p>Calculate gradients using chain rule: ∂C/∂w = ∂C/∂a × ∂a/∂z × ∂z/∂w</p>
+                    </div>
+                    <div class="process-arrow">→</div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <h4>Update Weights</h4>
+                        <p>Move opposite to gradient: w = w - η × ∂C/∂w</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="backprop-visualization">
+                <h3>Interactive Backpropagation Example</h3>
+                <div class="backprop-controls">
+                    <button class="btn btn--primary" id="step-forward">Step Forward</button>
+                    <button class="btn btn--primary" id="step-backward">Step Backward</button>
+                    <button class="btn btn--secondary" id="reset-backprop">Reset</button>
+                    <div class="backprop-stage" id="backprop-stage">Stage: Ready</div>
+                </div>
+                <canvas id="backprop-canvas" width="700" height="400"></canvas>
+                <div class="backprop-explanation" id="backprop-explanation">
+                    <h4>Current Step:</h4>
+                    <p id="backprop-text">Click "Step Forward" to begin forward propagation</p>
+                    <div id="backprop-math" class="formula-display"></div>
+                </div>
+            </div>
+
+            <div class="chain-rule-section">
+                <h3>🔗 The Chain Rule</h3>
+                <div class="formula-box">
+                    <p class="formula">∂f/∂x = (∂f/∂u) × (∂u/∂x)</p>
+                    <p>For composite functions, multiply the derivatives of each part</p>
+                </div>
+                <div class="chain-example">
+                    <h4>Example: Computing ∂C/∂w₁</h4>
+                    <div class="explanation-grid">
+                        <div class="explanation-card">
+                            <p><strong>Forward Pass:</strong></p>
+                            <p>z₁ = w₁x + b₁</p>
+                            <p>a₁ = σ(z₁)</p>
+                            <p>z₂ = w₂a₁ + b₂</p>
+                            <p>a₂ = σ(z₂)</p>
+                            <p>C = ½(y - a₂)²</p>
+                        </div>
+                        <div class="explanation-card">
+                            <p><strong>Backward Pass (Chain Rule):</strong></p>
+                            <p>∂C/∂a₂ = -(y - a₂)</p>
+                            <p>∂a₂/∂z₂ = σ'(z₂)</p>
+                            <p>∂z₂/∂a₁ = w₂</p>
+                            <p>∂a₁/∂z₁ = σ'(z₁)</p>
+                            <p>∂z₁/∂w₁ = x</p>
+                            <p class="formula">∂C/∂w₁ = ∂C/∂a₂ × ∂a₂/∂z₂ × ∂z₂/∂a₁ × ∂a₁/∂z₁ × ∂z₁/∂w₁</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <h4>🔑 Why Backpropagation is Efficient</h4>
+                <p>Without backpropagation, we'd need to compute gradients for each weight independently (very slow!). Backpropagation reuses intermediate calculations as it goes backward, making it possible to train deep networks efficiently.</p>
+            </div>
+        </section>
+
+        <!-- Tab 10: Gradient Problems -->
+        <section id="gradient-problems" class="tab-content">
+            <h2>Vanishing &amp; Exploding Gradients</h2>
+            <p class="subtitle">Critical problems in deep neural networks and their solutions</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card" style="border-left: 4px solid var(--color-error);">
+                    <h3>Vanishing Gradient Problem</h3>
+                    <div class="capability-list">
+                        <h4>Problem:</h4>
+                        <p>Gradients become exponentially smaller as they propagate backward through layers</p>
+                        <h4>Cause:</h4>
+                        <ul>
+                            <li>Chain rule multiplies many derivatives &lt; 1</li>
+                            <li>Sigmoid max derivative = 0.25</li>
+                            <li>Deep networks: 0.25 × 0.25 × ... → 0</li>
+                        </ul>
+                        <h4>Effect:</h4>
+                        <p><strong style="color: var(--color-error);">Early layers learn very slowly or not at all</strong></p>
+                    </div>
+                </div>
+
+                <div class="comparison-card" style="border-left: 4px solid var(--color-warning);">
+                    <h3>Exploding Gradient Problem</h3>
+                    <div class="capability-list">
+                        <h4>Problem:</h4>
+                        <p>Gradients become exponentially larger as they propagate backward</p>
+                        <h4>Cause:</h4>
+                        <ul>
+                            <li>Chain rule multiplies many derivatives &gt; 1</li>
+                            <li>Large weight values</li>
+                            <li>Deep networks with ReLU and large weights</li>
+                        </ul>
+                        <h4>Effect:</h4>
+                        <p><strong style="color: var(--color-warning);">Weights update too much, training becomes unstable, NaN values</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gradient-demo">
+                <h3>Interactive Gradient Flow Demonstration</h3>
+                <div class="gradient-controls">
+                    <div class="control-group">
+                        <label>Activation Function:</label>
+                        <select id="grad-activation">
+                            <option value="sigmoid">Sigmoid (causes vanishing)</option>
+                            <option value="relu">ReLU (stable gradients)</option>
+                            <option value="tanh">Tanh (causes vanishing)</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Network Depth: <span id="depth-value">5</span> layers <span id="depth-warning" class="range-warning"></span></label>
+                        <input type="range" id="network-depth" min="1" max="50" step="1" value="5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 1 to 50 | <span style="color: var(--color-error);">Warning: &gt;20 layers = severe vanishing gradients!</span></small>
+                    </div>
+                    <div class="control-group">
+                        <label>Initial Weight Scale: <span id="weight-scale-value">1.0</span> <span id="weight-scale-warning" class="range-warning"></span></label>
+                        <input type="range" id="weight-scale" min="0.001" max="10.0" step="0.1" value="1.0">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 0.001 to 10.0 | <span style="color: var(--color-error);">Warning: &gt;2.0 causes gradient explosion!</span></small>
+                    </div>
+                    <button class="btn btn--primary" id="compute-gradients">Compute Gradients</button>
+                </div>
+                <canvas id="gradient-flow-canvas" width="700" height="400"></canvas>
+                <div class="gradient-info" id="gradient-info">
+                    <p><strong>First Layer Gradient:</strong> <span id="first-grad">-</span></p>
+                    <p><strong>Last Layer Gradient:</strong> <span id="last-grad">-</span></p>
+                    <p><strong>Gradient Ratio:</strong> <span id="grad-ratio">-</span></p>
+                </div>
+            </div>
+
+            <div class="solutions-section">
+                <h3>🛠️ Solutions to Gradient Problems</h3>
+                <div class="solution-grid">
+                    <div class="solution-card">
+                        <h4>1. Use ReLU Activation</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐⭐⭐</div>
+                        <p><strong>Why:</strong> ReLU has derivative of 1 for positive inputs (no saturation)</p>
+                        <p><strong>For:</strong> Vanishing gradients</p>
+                        <div class="code-block">
+                            <pre>f(z) = max(0, z)
+f'(z) = 1 if z &gt; 0, else 0</pre>
+                        </div>
+                    </div>
+
+                    <div class="solution-card">
+                        <h4>2. Gradient Clipping</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐⭐⭐</div>
+                        <p><strong>Why:</strong> Limits gradient magnitude to threshold</p>
+                        <p><strong>For:</strong> Exploding gradients</p>
+                        <div class="gradient-clipping-demo">
+                            <label>Clipping Threshold: <span id="clip-threshold-val">1.0</span></label>
+                            <input type="range" id="clip-threshold" min="0.1" max="5" step="0.1" value="1.0">
+                            <canvas id="clipping-canvas" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="solution-card">
+                        <h4>3. Batch Normalization</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐⭐</div>
+                        <p><strong>Why:</strong> Normalizes layer inputs to maintain consistent gradient flow</p>
+                        <p><strong>For:</strong> Vanishing gradients</p>
+                        <p>Normalizes each layer's input to mean=0, variance=1</p>
+                    </div>
+
+                    <div class="solution-card">
+                        <h4>4. Skip Connections (ResNet)</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐⭐⭐</div>
+                        <p><strong>Why:</strong> Allows gradients to bypass layers</p>
+                        <p><strong>For:</strong> Vanishing gradients</p>
+                        <p>y = F(x) + x (identity shortcut)</p>
+                    </div>
+
+                    <div class="solution-card">
+                        <h4>5. Weight Regularization</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐</div>
+                        <p><strong>Why:</strong> Penalizes large weights</p>
+                        <p><strong>For:</strong> Exploding gradients</p>
+                        <div class="code-block">
+                            <pre>L1: Loss + λ × Σ|w|
+L2: Loss + λ × Σw²</pre>
+                        </div>
+                    </div>
+
+                    <div class="solution-card">
+                        <h4>6. LSTM/GRU Networks</h4>
+                        <div class="solution-effectiveness">Effectiveness: ⭐⭐⭐⭐⭐</div>
+                        <p><strong>Why:</strong> Special gates control gradient flow</p>
+                        <p><strong>For:</strong> Vanishing gradients in RNNs</p>
+                        <p>Internal cell state maintains gradient information</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-visualization">
+                <h3>Activation Function Gradient Comparison</h3>
+                <div class="activation-grad-comparison">
+                    <div class="activation-grad-card">
+                        <h4>Sigmoid Derivative</h4>
+                        <canvas id="sigmoid-derivative-canvas" width="300" height="200"></canvas>
+                        <p>Max derivative: 0.25 at z=0</p>
+                        <p style="color: var(--color-error);">⚠️ Causes vanishing gradients in deep networks</p>
+                    </div>
+                    <div class="activation-grad-card">
+                        <h4>ReLU Derivative</h4>
+                        <canvas id="relu-derivative-canvas" width="300" height="200"></canvas>
+                        <p>Derivative: 1 for z &gt; 0, 0 otherwise</p>
+                        <p style="color: var(--color-success);">✓ Stable gradients in deep networks</p>
+                    </div>
+                    <div class="activation-grad-card">
+                        <h4>Tanh Derivative</h4>
+                        <canvas id="tanh-derivative-canvas" width="300" height="200"></canvas>
+                        <p>Max derivative: 1 at z=0</p>
+                        <p style="color: var(--color-warning);">⚠️ Better than sigmoid but still saturates</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 11: Optimizers -->
+        <section id="optimizers" class="tab-content">
+            <h2>Optimizer Algorithms</h2>
+            <p class="subtitle">Modern optimization algorithms that improve upon basic gradient descent</p>
+
+            <div class="info-box">
+                <p><strong>What are Optimizers?</strong></p>
+                <p>Optimizers are algorithms that encapsulate gradient descent methods and automatically adjust parameters during training. They improve upon basic gradient descent by accelerating convergence, escaping local minima, and adapting learning rates per parameter.</p>
+            </div>
+
+            <div class="optimizer-reasons">
+                <h3>Why Improve Gradient Descent?</h3>
+                <div class="explanation-grid">
+                    <div class="explanation-card">
+                        <h4>🚀 Accelerate Convergence</h4>
+                        <p>Reach optimal solutions faster with better update rules</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>🎯 Escape Local Minima</h4>
+                        <p>Build momentum to overcome narrow valleys and plateaus</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>⚙️ Adaptive Learning Rates</h4>
+                        <p>Different learning rates for different parameters automatically</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>🎛️ Simplify Tuning</h4>
+                        <p>Reduce manual hyperparameter tuning effort</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="optimizer-comparison-viz">
+                <h3>Interactive Optimizer Comparison</h3>
+                <p class="subtitle">Watch different optimizers navigate the same loss surface</p>
+                
+                <div class="optimizer-controls">
+                    <div class="control-group">
+                        <label>Select Optimizers to Compare:</label>
+                        <div class="optimizer-checkboxes">
+                            <label><input type="checkbox" id="opt-sgd" checked> SGD</label>
+                            <label><input type="checkbox" id="opt-momentum" checked> Momentum</label>
+                            <label><input type="checkbox" id="opt-adagrad"> AdaGrad</label>
+                            <label><input type="checkbox" id="opt-rmsprop"> RMSProp</label>
+                            <label><input type="checkbox" id="opt-adam" checked> Adam</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Loss Function:</label>
+                        <select id="loss-function">
+                            <option value="beale">Beale Function (valleys)</option>
+                            <option value="rosenbrock">Rosenbrock (narrow valley)</option>
+                            <option value="sphere">Sphere (simple bowl)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn--primary" id="run-optimizers">Run Comparison</button>
+                    <button class="btn btn--secondary" id="reset-optimizers">Reset</button>
+                </div>
+
+                <canvas id="optimizer-canvas" width="700" height="500"></canvas>
+                
+                <div class="optimizer-metrics" id="optimizer-metrics">
+                    <div class="metric-card" id="metric-sgd" style="display:none;">
+                        <h4 style="color: #FF6B6B;">SGD</h4>
+                        <p>Iterations: <span class="metric-value">-</span></p>
+                        <p>Final Loss: <span class="metric-value">-</span></p>
+                    </div>
+                    <div class="metric-card" id="metric-momentum" style="display:none;">
+                        <h4 style="color: #4ECDC4;">Momentum</h4>
+                        <p>Iterations: <span class="metric-value">-</span></p>
+                        <p>Final Loss: <span class="metric-value">-</span></p>
+                    </div>
+                    <div class="metric-card" id="metric-adagrad" style="display:none;">
+                        <h4 style="color: #FFE66D;">AdaGrad</h4>
+                        <p>Iterations: <span class="metric-value">-</span></p>
+                        <p>Final Loss: <span class="metric-value">-</span></p>
+                    </div>
+                    <div class="metric-card" id="metric-rmsprop" style="display:none;">
+                        <h4 style="color: #A8DADC;">RMSProp</h4>
+                        <p>Iterations: <span class="metric-value">-</span></p>
+                        <p>Final Loss: <span class="metric-value">-</span></p>
+                    </div>
+                    <div class="metric-card" id="metric-adam" style="display:none;">
+                        <h4 style="color: #95E1D3;">Adam</h4>
+                        <p>Iterations: <span class="metric-value">-</span></p>
+                        <p>Final Loss: <span class="metric-value">-</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="optimizer-details">
+                <h3>Optimizer Details</h3>
+                
+                <div class="optimizer-card">
+                    <h4>1. Momentum Optimizer</h4>
+                    <div class="formula-box">
+                        <p class="formula">Δw(n) = -η × g(n) + α × Δw(n-1)</p>
+                        <p>Where α is momentum coefficient (typically 0.9)</p>
+                    </div>
+                    <div class="optimizer-info-grid">
+                        <div>
+                            <h5>How It Works:</h5>
+                            <ul>
+                                <li>Accumulates past gradients as velocity</li>
+                                <li>Adds momentum term to weight updates</li>
+                                <li>Like a ball rolling down a hill with inertia</li>
+                                <li>Speeds up in consistent directions</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Advantages:</h5>
+                            <ul>
+                                <li>✅ Faster convergence than SGD</li>
+                                <li>✅ Reduces oscillations</li>
+                                <li>✅ Escapes narrow local minima</li>
+                                <li>✅ Accelerates in flat regions</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Disadvantages:</h5>
+                            <ul>
+                                <li>❌ Two hyperparameters to tune (η, α)</li>
+                                <li>❌ May overshoot optimal point</li>
+                                <li>❌ Requires experimentation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Typical Values:</h5>
+                            <p><strong>Learning rate (η):</strong> 0.01</p>
+                            <p><strong>Momentum (α):</strong> 0.9</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optimizer-card">
+                    <h4>2. AdaGrad Optimizer</h4>
+                    <div class="formula-box">
+                        <p class="formula">r_t = r_{t-1} + g_t²</p>
+                        <p class="formula">Δw = -η / (√(r_t) + ε) × g_t</p>
+                        <p>Where ε = 10⁻⁷ for numerical stability</p>
+                    </div>
+                    <div class="optimizer-info-grid">
+                        <div>
+                            <h5>How It Works:</h5>
+                            <ul>
+                                <li>Accumulates squared gradients in r_t</li>
+                                <li>Adapts learning rate per parameter</li>
+                                <li>Large gradients → smaller updates</li>
+                                <li>Small gradients → larger updates</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Advantages:</h5>
+                            <ul>
+                                <li>✅ Automatically adapts learning rate</li>
+                                <li>✅ Good for sparse gradients</li>
+                                <li>✅ Less manual tuning</li>
+                                <li>✅ Works well for sparse data</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Disadvantages:</h5>
+                            <ul>
+                                <li>❌ Learning rate decreases monotonically</li>
+                                <li>❌ Becomes very slow at convergence</li>
+                                <li>❌ Algorithm loses effectiveness over time</li>
+                                <li>❌ Not suitable for deep networks</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Use Cases:</h5>
+                            <p>Sparse data problems, early deep learning (less common now)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optimizer-card">
+                    <h4>3. RMSProp Optimizer</h4>
+                    <div class="formula-box">
+                        <p class="formula">r_t = β × r_{t-1} + (1 - β) × g_t²</p>
+                        <p class="formula">Δw = -η / (√(r_t) + ε) × g_t</p>
+                        <p>Where β is decay factor (typically 0.9)</p>
+                    </div>
+                    <div class="optimizer-info-grid">
+                        <div>
+                            <h5>How It Works:</h5>
+                            <ul>
+                                <li>Uses exponential moving average</li>
+                                <li>NOT accumulation like AdaGrad</li>
+                                <li>r_t doesn't grow indefinitely</li>
+                                <li>Maintains learning rate over time</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Advantages:</h5>
+                            <ul>
+                                <li>✅ Solves AdaGrad's diminishing LR problem</li>
+                                <li>✅ Effective for RNNs</li>
+                                <li>✅ Good for unstable objectives</li>
+                                <li>✅ More stable than AdaGrad</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Disadvantages:</h5>
+                            <ul>
+                                <li>❌ Still requires learning rate tuning</li>
+                                <li>❌ Decay factor β needs tuning</li>
+                                <li>❌ Less popular than Adam</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Typical Values:</h5>
+                            <p><strong>Learning rate (η):</strong> 0.001</p>
+                            <p><strong>Decay (β):</strong> 0.9</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="optimizer-card" style="border-left: 4px solid var(--color-success);">
+                    <h4>4. Adam Optimizer ⭐ (Most Popular)</h4>
+                    <div class="formula-box">
+                        <p class="formula">m_t = β₁ × m_{t-1} + (1 - β₁) × g_t</p>
+                        <p class="formula">v_t = β₂ × v_{t-1} + (1 - β₂) × g_t²</p>
+                        <p class="formula">m̂_t = m_t / (1 - β₁^t), v̂_t = v_t / (1 - β₂^t)</p>
+                        <p class="formula">w_{t+1} = w_t - η × m̂_t / (√(v̂_t) + ε)</p>
+                    </div>
+                    <div class="optimizer-info-grid">
+                        <div>
+                            <h5>How It Works:</h5>
+                            <ul>
+                                <li>Combines Momentum + RMSProp</li>
+                                <li>m_t: first moment (mean gradient)</li>
+                                <li>v_t: second moment (variance)</li>
+                                <li>Bias correction for initial training</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Advantages:</h5>
+                            <ul>
+                                <li>✅ Most commonly used optimizer</li>
+                                <li>✅ Fast and reliable convergence</li>
+                                <li>✅ Works well for most problems</li>
+                                <li>✅ Default hyperparameters work well</li>
+                                <li>✅ Less sensitive to tuning</li>
+                                <li>✅ Computationally efficient</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Disadvantages:</h5>
+                            <ul>
+                                <li>❌ More complex than simpler optimizers</li>
+                                <li>❌ Still requires some LR tuning</li>
+                                <li>❌ May not find global minimum</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5>Default Hyperparameters:</h5>
+                            <p><strong>Learning rate (η):</strong> 0.001</p>
+                            <p><strong>Beta1 (β₁):</strong> 0.9</p>
+                            <p><strong>Beta2 (β₂):</strong> 0.999</p>
+                            <p><strong>Epsilon (ε):</strong> 10⁻⁸</p>
+                        </div>
+                    </div>
+                    <div class="key-insight">
+                        <h5>🔑 Practical Usage</h5>
+                        <p>Start with default values. If convergence is too slow, increase learning rate. If oscillating, decrease learning rate. Usually converges quickly within 1000-2000 iterations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="optimizer-comparison-table">
+                <h3>Optimizer Comparison Table</h3>
+                <div style="overflow-x: auto;">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>SGD</th>
+                                <th>Momentum</th>
+                                <th>AdaGrad</th>
+                                <th>RMSProp</th>
+                                <th>Adam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Adaptive LR</strong></td>
+                                <td>❌ No</td>
+                                <td>❌ No</td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Handles Sparse Gradients</strong></td>
+                                <td>Poor</td>
+                                <td>Poor</td>
+                                <td>Good</td>
+                                <td>Good</td>
+                                <td>Good</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Convergence Speed</strong></td>
+                                <td>⭐ Slow</td>
+                                <td>⭐⭐ Faster</td>
+                                <td>⭐⭐ Fast initially</td>
+                                <td>⭐⭐⭐ Fast</td>
+                                <td>⭐⭐⭐⭐ Fastest</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Memory Efficiency</strong></td>
+                                <td>High</td>
+                                <td>High</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                                <td>Medium</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hyperparameter Tuning</strong></td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td>Low</td>
+                                <td>Low-Med</td>
+                                <td>Low</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Escapes Local Minima</strong></td>
+                                <td>Poor</td>
+                                <td>Better</td>
+                                <td>Good</td>
+                                <td>Good</td>
+                                <td>Excellent</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Learning Rate Decay</strong></td>
+                                <td>Manual</td>
+                                <td>Manual</td>
+                                <td>Auto (too much)</td>
+                                <td>Auto (good)</td>
+                                <td>Auto (good)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stability</strong></td>
+                                <td>Volatile</td>
+                                <td>Better</td>
+                                <td>Stable</td>
+                                <td>Stable</td>
+                                <td>Most Stable</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Common Use Cases</strong></td>
+                                <td>Classic problems</td>
+                                <td>RNNs, plateaus</td>
+                                <td>Sparse data</td>
+                                <td>RNNs, unstable</td>
+                                <td>Deep Learning (default)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="practical-recommendations">
+                <h3>🎯 Practical Recommendations</h3>
+                <div class="recommendation-grid">
+                    <div class="recommendation-card">
+                        <h4>When to Use SGD</h4>
+                        <p><strong>Use for:</strong> Classical problems, fine control, when you want to understand every detail</p>
+                        <p><strong>Avoid:</strong> Large-scale deep learning, complex models</p>
+                    </div>
+                    <div class="recommendation-card">
+                        <h4>When to Use Momentum</h4>
+                        <p><strong>Use for:</strong> RNNs, escaping plateaus, when SGD is too slow</p>
+                        <p><strong>Avoid:</strong> When you don't want to tune momentum coefficient</p>
+                    </div>
+                    <div class="recommendation-card">
+                        <h4>When to Use AdaGrad</h4>
+                        <p><strong>Use for:</strong> Sparse data, NLP with rare features</p>
+                        <p><strong>Avoid:</strong> Deep networks, long training runs (learning rate diminishes)</p>
+                    </div>
+                    <div class="recommendation-card">
+                        <h4>When to Use RMSProp</h4>
+                        <p><strong>Use for:</strong> RNNs, unstable objectives, when AdaGrad fails</p>
+                        <p><strong>Avoid:</strong> When Adam is available (Adam is usually better)</p>
+                    </div>
+                    <div class="recommendation-card" style="border: 2px solid var(--color-success);">
+                        <h4>⭐ When to Use Adam (Recommended)</h4>
+                        <p><strong>Use for:</strong> Almost everything! CNNs, RNNs, Transformers, transfer learning</p>
+                        <p><strong>Default choice</strong> for modern deep learning</p>
+                        <p><strong>Avoid:</strong> Very rare cases where SGD with careful tuning performs better</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hyperparameter-tuning">
+                <h3>Interactive Hyperparameter Explorer</h3>
+                <p class="subtitle">See how hyperparameters affect optimizer behavior</p>
+                
+                <div class="tuning-controls">
+                    <div class="control-group">
+                        <label>Select Optimizer:</label>
+                        <select id="tuning-optimizer">
+                            <option value="momentum">Momentum</option>
+                            <option value="adam" selected>Adam</option>
+                        </select>
+                    </div>
+                    <div id="momentum-params" style="display:none;">
+                        <div class="control-group">
+                            <label>Learning Rate (η): <span id="tune-lr-val">0.01</span></label>
+                            <input type="range" id="tune-lr" min="0.0001" max="5.0" step="0.01" value="0.01">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Extended range</small>
+                        </div>
+                        <div class="control-group">
+                            <label>Momentum (α): <span id="tune-momentum-val">0.9</span> <span id="momentum-warning" class="range-warning"></span></label>
+                            <input type="range" id="tune-momentum" min="0" max="1.5" step="0.01" value="0.9">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);"><span style="color: var(--color-error);">Warning: &gt;1.0 = unstable momentum!</span></small>
+                        </div>
+                    </div>
+                    <div id="adam-params">
+                        <div class="control-group">
+                            <label>Learning Rate (η): <span id="tune-adam-lr-val">0.001</span></label>
+                            <input type="range" id="tune-adam-lr" min="0.00001" max="1.0" step="0.0001" value="0.001">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Full spectrum: 0.00001 to 1.0</small>
+                        </div>
+                        <div class="control-group">
+                            <label>Beta1 (β₁): <span id="tune-beta1-val">0.9</span></label>
+                            <input type="range" id="tune-beta1" min="0" max="0.999" step="0.01" value="0.9">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Experiment range: 0 to 0.999</small>
+                        </div>
+                        <div class="control-group">
+                            <label>Beta2 (β₂): <span id="tune-beta2-val">0.999</span></label>
+                            <input type="range" id="tune-beta2" min="0" max="0.9999" step="0.0001" value="0.999">
+                            <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Experiment range: 0 to 0.9999</small>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary" id="run-tuning">Run with These Parameters</button>
+                </div>
+                
+                <canvas id="tuning-canvas" width="600" height="400"></canvas>
+                
+                <div id="tuning-feedback" class="tuning-feedback">
+                    <p id="feedback-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 12: Overfitting & Regularization -->
+        <section id="overfitting" class="tab-content">
+            <h2>Overfitting &amp; Regularization Techniques</h2>
+            <p class="subtitle">Understanding overfitting and techniques to prevent it in neural networks</p>
+
+            <div class="info-box">
+                <h3>📊 Part 1: Understanding Overfitting</h3>
+                <p><strong>Definition:</strong> Overfitting occurs when a model performs well on training data but poorly on test/new data. The model memorizes noise instead of learning patterns.</p>
+            </div>
+
+            <div class="overfitting-causes">
+                <h3>Root Causes of Overfitting</h3>
+                <div class="explanation-grid">
+                    <div class="explanation-card">
+                        <h4>🔢 Insufficient Data</h4>
+                        <p>Training data size is too small - not enough samples to learn general patterns</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>🧩 Model Too Complex</h4>
+                        <p>Too many parameters, layers, or neurons relative to data size</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>🔊 Noisy Data</h4>
+                        <p>Training data contains noise and irrelevant information</p>
+                    </div>
+                    <div class="explanation-card">
+                        <h4>⏰ Training Too Long</h4>
+                        <p>Model learns noise from training data over many epochs</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overfitting-demo">
+                <h3>Visual Demonstration: Training vs Validation Loss</h3>
+                <div class="overfitting-controls">
+                    <div class="control-group">
+                        <label>Model Complexity: <span id="overfit-complexity-val">5</span> layers</label>
+                        <input type="range" id="overfit-complexity" min="1" max="20" step="1" value="5">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">More layers = more prone to overfitting</small>
+                    </div>
+                    <div class="control-group">
+                        <label>Training Data Size: <span id="overfit-data-val">100</span> samples</label>
+                        <input type="range" id="overfit-data" min="10" max="1000" step="10" value="100">
+                        <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Less data = more prone to overfitting</small>
+                    </div>
+                    <button class="btn btn--primary" id="run-overfit-demo">Run Training</button>
+                </div>
+                <canvas id="overfitting-canvas" width="700" height="400"></canvas>
+                <div class="overfitting-indicators" id="overfitting-indicators">
+                    <div class="indicator-item">
+                        <strong>Training Loss:</strong> <span id="train-loss-display">-</span>
+                    </div>
+                    <div class="indicator-item">
+                        <strong>Validation Loss:</strong> <span id="val-loss-display">-</span>
+                    </div>
+                    <div class="indicator-item">
+                        <strong>Gap:</strong> <span id="gap-display">-</span>
+                    </div>
+                    <div class="indicator-status" id="overfit-status">Click "Run Training" to see overfitting in action</div>
+                </div>
+            </div>
+
+            <div class="regularization-section">
+                <h3>🛡️ Part 2: Regularization Techniques</h3>
+                <p class="subtitle">Methods to prevent overfitting and improve generalization</p>
+
+                <div class="technique-selector">
+                    <button class="technique-btn active" data-technique="l1">L1 (Lasso)</button>
+                    <button class="technique-btn" data-technique="l2">L2 (Ridge)</button>
+                    <button class="technique-btn" data-technique="dropout">Dropout</button>
+                    <button class="technique-btn" data-technique="early-stopping">Early Stopping</button>
+                    <button class="technique-btn" data-technique="comparison">Compare All</button>
+                </div>
+
+                <!-- L1 Regularization -->
+                <div id="technique-l1" class="technique-content active">
+                    <h3>L1 Regularization (Lasso Regression)</h3>
+                    <div class="formula-box">
+                        <p class="formula">L = Loss + λ·Σ|w<sub>i</sub>|</p>
+                        <p style="font-size: var(--font-size-sm); margin-top: var(--space-8);">Where λ (lambda) is regularization strength</p>
+                    </div>
+
+                    <div class="technique-details">
+                        <div class="detail-section">
+                            <h4>How It Works</h4>
+                            <ul>
+                                <li>Adds penalty term proportional to absolute value of weights</li>
+                                <li>Forces weights to shrink toward zero</li>
+                                <li>Can reduce weights <strong>exactly to zero</strong> (feature elimination)</li>
+                                <li>Creates sparse solutions - many weights become 0</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Gradient Formula</h4>
+                            <p class="formula">∇L = ∂Loss/∂w + λ·sign(w)</p>
+                            <p class="formula">w ← (w - ηλ·sign(w)) - η∇Loss(w)</p>
+                        </div>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-success);">
+                                <h4>✅ Advantages</h4>
+                                <ul>
+                                    <li>Automatic feature selection</li>
+                                    <li>Reduces model complexity</li>
+                                    <li>More interpretable (fewer features)</li>
+                                    <li>Handles multicollinearity by removing redundant features</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-error);">
+                                <h4>❌ Disadvantages</h4>
+                                <ul>
+                                    <li>Can eliminate important features if λ too strong</li>
+                                    <li>Computationally expensive (non-differentiable)</li>
+                                    <li>Less effective when all features important</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="interactive-demo">
+                            <h4>Interactive L1 Demo: Watch Weights Go to Zero</h4>
+                            <div class="reg-controls">
+                                <div class="control-group">
+                                    <label>Lambda (λ): <span id="l1-lambda-val">0.01</span> <span id="l1-warning" class="range-warning"></span></label>
+                                    <input type="range" id="l1-lambda" min="0" max="10.0" step="0.01" value="0.01">
+                                    <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 0 to 10.0 | <span style="color: var(--color-error);">Warning: &gt;5.0 = extreme regularization (underfitting)</span></small>
+                                </div>
+                                <button class="btn btn--primary" id="run-l1">Apply L1</button>
+                            </div>
+                            <canvas id="l1-canvas" width="600" height="300"></canvas>
+                            <p class="demo-explanation" id="l1-explanation">Adjust lambda to see how L1 drives weights to exactly zero. Higher lambda = more sparsity.</p>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>🎯 When to Use L1</h4>
+                            <p>Use L1 when you have <strong>many features</strong> and need to identify which are important. Great for feature selection and creating interpretable models.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- L2 Regularization -->
+                <div id="technique-l2" class="technique-content">
+                    <h3>L2 Regularization (Ridge Regression)</h3>
+                    <div class="formula-box">
+                        <p class="formula">L = Loss + (λ/2)·Σ(w<sub>i</sub>)²</p>
+                        <p style="font-size: var(--font-size-sm); margin-top: var(--space-8);">Where λ (lambda) is regularization strength</p>
+                    </div>
+
+                    <div class="technique-details">
+                        <div class="detail-section">
+                            <h4>How It Works</h4>
+                            <ul>
+                                <li>Adds penalty term proportional to square of weights</li>
+                                <li>Shrinks weights closer to zero but <strong>never exactly to zero</strong></li>
+                                <li>Distributes weight reductions across all parameters</li>
+                                <li>Also called "weight decay"</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Weight Update Formula</h4>
+                            <p class="formula">w ← (1 - ηλ)w - η∇Loss(w)</p>
+                            <p style="font-size: var(--font-size-sm); margin-top: var(--space-8);">The (1 - ηλ) term acts as a reduction factor</p>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Quadratic Form Insight</h4>
+                            <p class="formula">w<sub>i</sub> = (λ<sub>i</sub>/(λ<sub>i</sub> + λ))·w<sub>i</sub></p>
+                            <p style="font-size: var(--font-size-sm); margin-top: var(--space-8);">Where λ<sub>i</sub> are eigenvalues of Hessian matrix:</p>
+                            <ul style="font-size: var(--font-size-sm); margin-left: var(--space-20);">
+                                <li>When λ<sub>i</sub> ≫ λ: penalty has small effect</li>
+                                <li>When λ<sub>i</sub> ≪ λ: weight reduced toward zero</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-success);">
+                                <h4>✅ Advantages</h4>
+                                <ul>
+                                    <li>Prevents any single weight from becoming too large</li>
+                                    <li>Better for multicollinearity (correlated features)</li>
+                                    <li>Keeps all features (just down-weighted)</li>
+                                    <li>Smooth convergence, numerically stable</li>
+                                    <li>Closed-form solution exists</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-error);">
+                                <h4>❌ Disadvantages</h4>
+                                <ul>
+                                    <li>Cannot perform feature selection</li>
+                                    <li>All features included equally</li>
+                                    <li>May be less interpretable</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="interactive-demo">
+                            <h4>Interactive L2 Demo: Watch Weights Shrink</h4>
+                            <div class="reg-controls">
+                                <div class="control-group">
+                                    <label>Lambda (λ): <span id="l2-lambda-val">0.01</span> <span id="l2-warning" class="range-warning"></span></label>
+                                    <input type="range" id="l2-lambda" min="0" max="10.0" step="0.01" value="0.01">
+                                    <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 0 to 10.0 | <span style="color: var(--color-error);">Warning: &gt;5.0 = model may underfit!</span></small>
+                                </div>
+                                <button class="btn btn--primary" id="run-l2">Apply L2</button>
+                            </div>
+                            <canvas id="l2-canvas" width="600" height="300"></canvas>
+                            <p class="demo-explanation" id="l2-explanation">Adjust lambda to see how L2 shrinks all weights proportionally. Weights approach zero but never reach it.</p>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>🎯 When to Use L2</h4>
+                            <p>Use L2 when <strong>all features are potentially useful</strong> and you have multicollinearity. Default choice for general regularization.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropout -->
+                <div id="technique-dropout" class="technique-content">
+                    <h3>Dropout Regularization</h3>
+                    <div class="info-box">
+                        <p><strong>Invented:</strong> 2012 by Geoffrey Hinton and colleagues</p>
+                        <p><strong>Concept:</strong> Randomly deactivate neurons during training to create an ensemble effect</p>
+                    </div>
+
+                    <div class="technique-details">
+                        <div class="detail-section">
+                            <h4>How It Works</h4>
+                            <ol>
+                                <li>During training, each neuron has probability <strong>p</strong> of being deactivated (dropped)</li>
+                                <li>Deactivated neurons' connections are removed temporarily</li>
+                                <li>Forward pass through modified network with remaining neurons</li>
+                                <li>Backward pass computes gradients only for active neurons</li>
+                                <li>Parameters of dropped neurons NOT updated that iteration</li>
+                                <li>In next iteration, randomly select different neurons to drop</li>
+                                <li>At inference: use all neurons (full network)</li>
+                            </ol>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Typical Dropout Rates</h4>
+                            <div class="dropout-rates">
+                                <div class="rate-card">
+                                    <h5>Input Layer</h5>
+                                    <p class="big-number">20%</p>
+                                    <p>(p = 0.2)</p>
+                                    <p class="rate-desc">Low dropout - preserve input information</p>
+                                </div>
+                                <div class="rate-card">
+                                    <h5>Hidden Layers</h5>
+                                    <p class="big-number">50%</p>
+                                    <p>(p = 0.5)</p>
+                                    <p class="rate-desc">Moderate dropout - standard choice</p>
+                                </div>
+                                <div class="rate-card">
+                                    <h5>Output Layer</h5>
+                                    <p class="big-number">0%</p>
+                                    <p>(NO dropout)</p>
+                                    <p class="rate-desc">Keep all output neurons</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Why It Works: Ensemble Effect</h4>
+                            <ul>
+                                <li>Dropout creates multiple sub-networks with different architectures</li>
+                                <li>Each training iteration trains a different sub-network</li>
+                                <li>At test time, use all neurons (averaging ensemble predictions)</li>
+                                <li>Reduces co-adaptation of neurons (over-dependence)</li>
+                                <li>Forces network to learn robust features</li>
+                            </ul>
+                        </div>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-success);">
+                                <h4>✅ Advantages</h4>
+                                <ul>
+                                    <li>Highly effective at preventing overfitting</li>
+                                    <li>Simple to implement, computationally cheap</li>
+                                    <li>Can be used in non-deep learning models</li>
+                                    <li>Ensemble effect improves generalization</li>
+                                    <li>Reduces co-adaptation between neurons</li>
+                                    <li>Works well with large datasets</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-error);">
+                                <h4>❌ Disadvantages</h4>
+                                <ul>
+                                    <li>Less effective when training data insufficient</li>
+                                    <li>Adds training time (network learns slower)</li>
+                                    <li>Requires more epochs to train</li>
+                                    <li>Hyperparameter p needs tuning</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="interactive-demo">
+                            <h4>Interactive Dropout Simulator</h4>
+                            <div class="reg-controls">
+                                <div class="control-group">
+                                    <label>Dropout Rate: <span id="dropout-rate-val">50%</span> <span id="dropout-warning" class="range-warning"></span></label>
+                                    <input type="range" id="dropout-rate" min="0" max="95" step="5" value="50">
+                                    <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 0% to 95% | <span style="color: var(--color-error);">Warning: &gt;80% = too many neurons dropped!</span></small>
+                                </div>
+                                <button class="btn btn--primary" id="run-dropout">Apply Dropout</button>
+                                <button class="btn btn--secondary" id="reset-dropout">New Random Selection</button>
+                            </div>
+                            <canvas id="dropout-canvas" width="600" height="400"></canvas>
+                            <div class="dropout-info" id="dropout-info">
+                                <p><strong>Active Neurons:</strong> <span id="active-neurons">-</span></p>
+                                <p><strong>Dropped Neurons:</strong> <span id="dropped-neurons">-</span></p>
+                                <p class="info-text">Gray neurons are dropped. Each training iteration randomly selects different neurons to drop.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>🎯 When to Use Dropout</h4>
+                            <p>Use Dropout for <strong>large models and deep networks</strong> with sufficient training data. Start with 20% input, 50% hidden. Combine with other regularization for best results.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Early Stopping -->
+                <div id="technique-early-stopping" class="technique-content">
+                    <h3>Early Stopping</h3>
+                    <div class="info-box">
+                        <p><strong>Concept:</strong> Stop training when validation performance stops improving, even if training hasn't converged</p>
+                    </div>
+
+                    <div class="technique-details">
+                        <div class="detail-section">
+                            <h4>How It Works</h4>
+                            <ol>
+                                <li>Split data into training and validation sets</li>
+                                <li>During each epoch:
+                                    <ul style="margin-left: var(--space-20);">
+                                        <li>Train on training data</li>
+                                        <li>Evaluate on validation data</li>
+                                        <li>Track validation loss</li>
+                                    </ul>
+                                </li>
+                                <li>If validation loss doesn't improve for <strong>patience</strong> epochs, stop</li>
+                                <li>Restore model weights from best epoch (lowest validation loss)</li>
+                            </ol>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Key Parameters</h4>
+                            <div class="param-grid">
+                                <div class="param-card">
+                                    <h5>Patience</h5>
+                                    <p class="param-value">5-20 epochs</p>
+                                    <p class="param-desc">Number of epochs without improvement before stopping</p>
+                                </div>
+                                <div class="param-card">
+                                    <h5>Minimum Delta</h5>
+                                    <p class="param-value">0.0001</p>
+                                    <p class="param-desc">Minimum improvement to count as "improvement"</p>
+                                </div>
+                                <div class="param-card">
+                                    <h5>Monitoring Metric</h5>
+                                    <p class="param-value">Val Loss</p>
+                                    <p class="param-desc">Usually validation loss (more nuanced than accuracy)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Algorithm</h4>
+                            <div class="code-block">
+                                <pre>Set counter k = 0, best_loss = infinity
+While k &lt; patience:
+  - Run one training iteration
+  - Evaluate on validation set
+  - If val_loss ≤ best_loss:
+      Save current model
+      k = 0 (reset counter)
+  - Else:
+      k = k + 1 (increment counter)
+Return best saved model</pre>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h4>Patience Values</h4>
+                            <div class="patience-options">
+                                <div class="option-card">
+                                    <h5>Conservative</h5>
+                                    <p class="big-number">3-5</p>
+                                    <p>Stop early, fast training</p>
+                                </div>
+                                <div class="option-card">
+                                    <h5>Moderate</h5>
+                                    <p class="big-number">10-20</p>
+                                    <p>Balanced approach (recommended)</p>
+                                </div>
+                                <div class="option-card">
+                                    <h5>Aggressive</h5>
+                                    <p class="big-number">50+</p>
+                                    <p>Allow more training time</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comparison-grid">
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-success);">
+                                <h4>✅ Advantages</h4>
+                                <ul>
+                                    <li>Prevents overfitting</li>
+                                    <li>Saves computational resources</li>
+                                    <li>Simple to implement (few lines of code)</li>
+                                    <li>Improves generalization</li>
+                                    <li>No model architecture changes needed</li>
+                                    <li>Automatic epoch selection</li>
+                                </ul>
+                            </div>
+                            <div class="comparison-card" style="border-left: 4px solid var(--color-error);">
+                                <h4>❌ Disadvantages</h4>
+                                <ul>
+                                    <li>Requires validation set (reduces training data)</li>
+                                    <li>May stop before convergence</li>
+                                    <li>Sensitive to validation data quality</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="interactive-demo">
+                            <h4>Interactive Early Stopping Demo</h4>
+                            <div class="reg-controls">
+                                <div class="control-group">
+                                    <label>Patience: <span id="patience-val">10</span> epochs</label>
+                                    <input type="range" id="patience-input" min="1" max="100" step="1" value="10">
+                                    <small style="color: var(--color-text-secondary); font-size: var(--font-size-xs);">Range: 1 to 100 (immediate stopping vs very patient)</small>
+                                </div>
+                                <button class="btn btn--primary" id="run-early-stop">Simulate Training</button>
+                            </div>
+                            <canvas id="early-stop-canvas" width="700" height="400"></canvas>
+                            <div class="early-stop-info" id="early-stop-info">
+                                <p><strong>Stopped at Epoch:</strong> <span id="stop-epoch">-</span></p>
+                                <p><strong>Best Epoch:</strong> <span id="best-epoch">-</span></p>
+                                <p><strong>Patience Counter:</strong> <span id="patience-counter">-</span></p>
+                                <p class="info-text">Red vertical line shows when training stopped. Green line shows best model.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-insight">
+                            <h4>🎯 When to Use Early Stopping</h4>
+                            <p>Use Early Stopping for <strong>all deep learning models</strong>. It's simple, effective, and should be your first line of defense against overfitting. Use 15-20% validation split and monitor validation loss.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison -->
+                <div id="technique-comparison" class="technique-content">
+                    <h3>📊 Technique Comparison &amp; Best Practices</h3>
+
+                    <div class="comparison-table-section">
+                        <h4>Comprehensive Comparison Table</h4>
+                        <div style="overflow-x: auto;">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Technique</th>
+                                        <th>Type</th>
+                                        <th>Complexity</th>
+                                        <th>Effectiveness</th>
+                                        <th>Use Case</th>
+                                        <th>Key Hyperparameter</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>L1 Regularization</strong></td>
+                                        <td>Weight penalty</td>
+                                        <td>Medium</td>
+                                        <td>⭐⭐⭐⭐ High</td>
+                                        <td>Many features, feature elimination</td>
+                                        <td>λ (lambda): 0.0001-0.1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>L2 Regularization</strong></td>
+                                        <td>Weight penalty</td>
+                                        <td>Low</td>
+                                        <td>⭐⭐⭐⭐ High</td>
+                                        <td>Multicollinearity, all features useful</td>
+                                        <td>λ (lambda): 0.0001-0.1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Dropout</strong></td>
+                                        <td>Architectural</td>
+                                        <td>Low</td>
+                                        <td>⭐⭐⭐⭐⭐ Very High</td>
+                                        <td>Large models, deep networks</td>
+                                        <td>p (dropout rate): 0.2-0.5</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Early Stopping</strong></td>
+                                        <td>Training procedure</td>
+                                        <td>Very Low</td>
+                                        <td>⭐⭐⭐⭐ High</td>
+                                        <td>All models, prevent overtraining</td>
+                                        <td>patience: 5-20 epochs</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Data Augmentation</strong></td>
+                                        <td>Data preprocessing</td>
+                                        <td>Medium</td>
+                                        <td>⭐⭐⭐⭐ High</td>
+                                        <td>Limited data, especially images</td>
+                                        <td>transformation strength</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Batch Normalization</strong></td>
+                                        <td>Normalization</td>
+                                        <td>Medium</td>
+                                        <td>⭐⭐⭐ Moderate</td>
+                                        <td>Deeper networks, CNN, RNN</td>
+                                        <td>momentum: 0.9-0.99</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="recommendations-section">
+                        <h4>🎯 Recommended Combinations by Scenario</h4>
+                        <div class="scenario-grid">
+                            <div class="scenario-card" style="background: var(--color-bg-1);">
+                                <h5>Small Dataset</h5>
+                                <ul>
+                                    <li>✅ Data augmentation</li>
+                                    <li>✅ L2 regularization</li>
+                                    <li>✅ Early stopping</li>
+                                    <li>✅ Simple model architecture</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-card" style="background: var(--color-bg-2);">
+                                <h5>Large Dataset + Complex Model</h5>
+                                <ul>
+                                    <li>✅ Dropout (20-50%)</li>
+                                    <li>✅ Batch normalization</li>
+                                    <li>✅ Early stopping</li>
+                                    <li>✅ Data augmentation (optional)</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-card" style="background: var(--color-bg-3);">
+                                <h5>Many Features</h5>
+                                <ul>
+                                    <li>✅ L1 regularization (feature selection)</li>
+                                    <li>✅ Dropout</li>
+                                    <li>✅ Data augmentation</li>
+                                    <li>✅ Feature engineering</li>
+                                </ul>
+                            </div>
+                            <div class="scenario-card" style="background: var(--color-bg-4);">
+                                <h5>General Best Practice</h5>
+                                <ul>
+                                    <li>✅ Start with early stopping (always useful)</li>
+                                    <li>✅ Add L2 regularization</li>
+                                    <li>✅ Use dropout in hidden layers</li>
+                                    <li>✅ Monitor validation performance</li>
+                                    <li>✅ Use data augmentation if available</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="other-techniques">
+                        <h4>Other Regularization Techniques</h4>
+                        <div class="technique-grid">
+                            <div class="mini-technique-card">
+                                <h5>Batch Normalization</h5>
+                                <p><strong>Purpose:</strong> Normalize layer inputs to stabilize training</p>
+                                <p><strong>Benefits:</strong> Reduces internal covariate shift, allows higher learning rates, mild regularization effect</p>
+                            </div>
+                            <div class="mini-technique-card">
+                                <h5>Data Augmentation</h5>
+                                <p><strong>Purpose:</strong> Artificially increase training data</p>
+                                <p><strong>Techniques:</strong> Rotations, translations, crops, zoom, noise injection, mixup, cutout</p>
+                            </div>
+                            <div class="mini-technique-card">
+                                <h5>Model Simplification</h5>
+                                <p><strong>Purpose:</strong> Reduce model complexity</p>
+                                <p><strong>Methods:</strong> Fewer layers, fewer neurons per layer, simpler architecture</p>
+                            </div>
+                            <div class="mini-technique-card">
+                                <h5>Cross-Validation</h5>
+                                <p><strong>Purpose:</strong> Better estimate of generalization</p>
+                                <p><strong>Method:</strong> K-fold CV, split data into k folds, train on k-1 folds</p>
+                            </div>
+                            <div class="mini-technique-card">
+                                <h5>Ensemble Methods</h5>
+                                <p><strong>Bagging:</strong> Train multiple models on different subsets, average predictions</p>
+                                <p><strong>Boosting:</strong> Train models sequentially, correcting previous errors</p>
+                            </div>
+                            <div class="mini-technique-card">
+                                <h5>Parameter Sharing</h5>
+                                <p><strong>Purpose:</strong> Reduce total parameters</p>
+                                <p><strong>Example:</strong> Convolutional networks share weights across spatial locations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="l1-vs-l2-comparison">
+                        <h4>L1 vs L2: Side-by-Side Comparison</h4>
+                        <div class="vs-grid">
+                            <div class="vs-card" style="border: 2px solid var(--color-primary);">
+                                <h5>L1 (Lasso)</h5>
+                                <p><strong>Penalty:</strong> Σ|w|</p>
+                                <p><strong>Output:</strong> Sparse (many zeros)</p>
+                                <p><strong>Feature Selection:</strong> ✅ Yes</p>
+                                <p><strong>Geometry:</strong> Rhombus/diamond constraint space</p>
+                                <p><strong>Best for:</strong> Feature selection, feature elimination</p>
+                                <div class="formula-box" style="margin-top: var(--space-12);">
+                                    <p class="formula" style="font-size: var(--font-size-sm);">Special case: weights shrink to exactly 0</p>
+                                </div>
+                            </div>
+                            <div class="vs-card" style="border: 2px solid var(--color-success);">
+                                <h5>L2 (Ridge)</h5>
+                                <p><strong>Penalty:</strong> Σw²</p>
+                                <p><strong>Output:</strong> Dense (all non-zero)</p>
+                                <p><strong>Feature Selection:</strong> ❌ No</p>
+                                <p><strong>Geometry:</strong> Circle/sphere constraint space</p>
+                                <p><strong>Best for:</strong> Regularization, multicollinearity</p>
+                                <div class="formula-box" style="margin-top: var(--space-12);">
+                                    <p class="formula" style="font-size: var(--font-size-sm);">Weights shrink close to 0 but never exactly</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="warning-box" style="margin-top: var(--space-24);">
+                        <h4>⚠️ Important Considerations</h4>
+                        <ul>
+                            <li><strong>Regularization is not magic:</strong> It helps prevent overfitting but doesn't guarantee good performance</li>
+                            <li><strong>Always use validation set:</strong> Monitor validation metrics to detect overfitting early</li>
+                            <li><strong>Start simple:</strong> Begin with early stopping and L2, then add more techniques if needed</li>
+                            <li><strong>Hyperparameter tuning:</strong> Regularization strength (λ, dropout rate, patience) needs experimentation</li>
+                            <li><strong>More data is best:</strong> Regularization helps, but more/better data is the ultimate solution</li>
+                            <li><strong>Combine techniques:</strong> Using multiple regularization methods together often works best</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Neural Network Lab &copy; 2025 | Built for experimentation and learning</p>
+        <p style="font-size: var(--font-size-xs); margin-top: var(--space-8); color: var(--color-text-secondary);">Explore &bull; Experiment &bull; Master</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
